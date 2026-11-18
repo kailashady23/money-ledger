@@ -68,7 +68,7 @@ a{color:inherit}
 .nav a:hover{color:var(--ink)}
 .nav a[aria-current="page"]{color:var(--ink);background:var(--surface)}
 .nav svg{width:22px;height:22px;display:none}
-.top-icons{display:flex;gap:8px;align-items:center}
+.top-icons{display:flex;gap:8px;align-items:center;margin-left:auto}
 .ibtn{width:42px;height:42px;border-radius:14px;border:0;background:var(--surface);display:grid;place-items:center;cursor:pointer;text-decoration:none;color:var(--ink)}
 .ibtn:hover{background:var(--surface-2)}
 .ibtn svg{width:20px;height:20px}
@@ -231,6 +231,7 @@ td.r,th.r{text-align:right}
 
 @media (max-width:980px){ .home{grid-template-columns:minmax(0,1fr)} }
 @media (max-width:760px){
+  .top{backdrop-filter:none;-webkit-backdrop-filter:none;background:var(--bg)}
   .top-in{height:58px;gap:10px}
   .nav{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));gap:0;justify-content:space-around}
   .nav a{flex-direction:column;gap:3px;font-size:11px;padding:6px 4px;flex:1;min-width:0;border-radius:12px}
@@ -948,7 +949,7 @@ const foot = (label = 'Save') => `<div class="form-foot"><button type="button" c
 const acctOptions = (sel, none) => (none ? `<option value="">${esc(none)}</option>` : '') + ACCTS().map(a => `<option value="${a.id}" ${sel === a.id ? 'selected' : ''}>${esc(a.name)}${a.inst ? ' · ' + esc(a.inst) : ''}</option>`).join('');
 function demoPrompt(){ openDlg(`<h2 class="ttl">Make it yours</h2><p style="margin:0">You’re looking at example data. Keep the examples to edit them, or start fresh with your own accounts.</p><div class="form-foot"><button type="button" class="btn" id="dKeep">Keep examples</button><button type="submit" class="btn primary">Start fresh</button></div>`, () => { leaveDemo(false); }, f => $('#dKeep', f).addEventListener('click', () => leaveDemo(true))); }
 function moreDlg(){
-  openDlg(`<h2 class="ttl">Add something</h2><div class="list">${[['add-acct','bank','Bank account or card','Chequing, savings, credit card, cash'],['add-inv','invest','Investment','Stocks, ETFs, crypto, GIC/FD, gold, pension'],['add-loan','loan','Loan','Money you owe or lent'],['add-goal','goal','Savings goal','Emergency fund, trip, down payment'],['add-budget','card','Budget','A monthly limit for a category']].map(([a, i, t, s]) => `<button type="button" class="row" style="border:0;background:none;text-align:left;cursor:pointer;width:100%" data-act="${a}"><div class="cat" style="--c:var(--c6)">${svg(i)}</div><div><div class="t1">${t}</div><div class="t2">${s}</div></div><span aria-hidden="true">›</span></button>`).join('')}</div><div class="form-foot"><button type="button" class="btn" data-close>Close</button></div>`, () => true);
+  openDlg(`<h2 class="ttl">Add something</h2><div class="list">${[['add-acct','bank','Bank account or card','Chequing, savings, credit card, cash'],['add-inv','invest','Investment','Stocks, ETFs, crypto, GIC/FD, gold, pension'],['add-loan','loan','Loan','Money you owe or lent'],['add-goal','goal','Savings goal','Emergency fund, trip, down payment'],['add-budget','card','Budget','A monthly limit for a category'],['go-settings','check','Settings','Currency, backup and restore, start over']].map(([a, i, t, s]) => `<button type="button" class="row" style="border:0;background:none;text-align:left;cursor:pointer;width:100%" data-act="${a}"><div class="cat" style="--c:var(--c6)">${svg(i)}</div><div><div class="t1">${t}</div><div class="t2">${s}</div></div><span aria-hidden="true">›</span></button>`).join('')}</div><div class="form-foot"><button type="button" class="btn" data-close>Close</button></div>`, () => true);
 }
 
 function txForm(t = {}, type){
@@ -1279,6 +1280,7 @@ document.addEventListener('click', async e => {
     case 'demo-keep': return leaveDemo(true);
     case 'demo-empty': return leaveDemo(false);
     case 'more': return moreDlg();
+    case 'go-settings': closeDlg(); location.hash = 'preferences'; return;
     case 'home-chip': view.homeChip = id; return renderAll();
     case 'act-from-home': view.act = {month:'all', acct:view.homeAcct, type:view.homeChip === 'in' ? 'income' : view.homeChip === 'out' ? 'expense' : 'all', cat:'all', q:''}; return;
     case 'st-kind': view.stats.kind = id; return renderAll();
